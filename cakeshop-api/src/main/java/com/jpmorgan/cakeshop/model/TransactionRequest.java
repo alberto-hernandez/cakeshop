@@ -1,8 +1,5 @@
 package com.jpmorgan.cakeshop.model;
 
-import com.jpmorgan.cakeshop.error.APIException;
-import com.jpmorgan.cakeshop.model.ContractABI.Function;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,137 +8,170 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class TransactionRequest {
+import com.jpmorgan.cakeshop.error.APIException;
+import com.jpmorgan.cakeshop.model.ContractABI.Function;
 
-    public static final String BLOCK_LATEST = "latest";
+public class TransactionRequest
+{
 
-    public static final int DEFAULT_GAS = 3_149_000;
+	public static final String BLOCK_LATEST = "latest";
 
-    private String fromAddress;
+	public static final String DEFAULT_GAS = "0x300CC8";
 
-    private String contractAddress;
+	private String fromAddress;
 
-    private ContractABI abi;
+	private String contractAddress;
 
-    private Function function;
+	private ContractABI abi;
 
-    private final Object[] args;
+	private Function function;
 
-    private String privateFrom;
+	private final Object[] args;
 
-    private List<String> privateFor;
+	private String privateFrom;
 
-    private Object blockNumber;
+	private List<String> privateFor;
 
-    private final boolean isRead;
+	private Object blockNumber;
 
-    public TransactionRequest(String fromAddress, String contractAddress, ContractABI abi, String method, Object[] args, boolean isRead) throws APIException {
-        this(fromAddress, contractAddress, abi, method, args, isRead, null);
-    }
+	private final boolean isRead;
 
-    public TransactionRequest(String fromAddress, String contractAddress, ContractABI abi, String method, Object[] args, boolean isRead, Object blockNumber) throws APIException {
-        this.fromAddress = fromAddress;
-        this.contractAddress = contractAddress;
-        this.abi = abi;
-        this.isRead = isRead;
-        this.blockNumber = blockNumber;
-        this.args = args;
+	public TransactionRequest(String fromAddress, String contractAddress, ContractABI abi, String method, Object[] args, boolean isRead)
+			throws APIException
+	{
+		this(fromAddress, contractAddress, abi, method, args, isRead, null);
+	}
 
-        this.privateFrom = null;
-        this.privateFor = null;
+	public TransactionRequest(String fromAddress, String contractAddress, ContractABI abi, String method, Object[] args, boolean isRead,
+			Object blockNumber) throws APIException
+	{
+		this.fromAddress = fromAddress;
+		this.contractAddress = contractAddress;
+		this.abi = abi;
+		this.isRead = isRead;
+		this.blockNumber = blockNumber;
+		this.args = args;
 
-        this.function = abi.getFunction(method);
-        if (this.function == null) {
-            throw new APIException("Invalid method '" + method + "'");
-        }
-    }
+		this.privateFrom = null;
+		this.privateFor = null;
 
-    public Object[] toGethArgs() {
+		this.function = abi.getFunction(method);
+		if (this.function == null)
+		{
+			throw new APIException("Invalid method '" + method + "'");
+		}
+	}
 
-        Map<String, Object> req = new HashMap<>();
-        req.put("from", fromAddress);
-        req.put("to", contractAddress);
-        req.put("gas", DEFAULT_GAS);
-        req.put("data", function.encodeAsHex(args));
+	public Object[] toGethArgs()
+	{
 
-        if (StringUtils.isNotBlank(privateFrom)) {
-            req.put("privateFrom", privateFrom);
-        }
+		Map<String, Object> req = new HashMap<>();
+		req.put("from", fromAddress);
+		req.put("to", contractAddress);
+		req.put("gas", DEFAULT_GAS);
+		req.put("data", function.encodeAsHex(args));
 
-        if (privateFor != null && !privateFor.isEmpty()) {
-            req.put("privateFor", privateFor);
-        }
+		if (StringUtils.isNotBlank(privateFrom))
+		{
+			req.put("privateFrom", privateFrom);
+		}
 
-        if (isRead) {
-            if (blockNumber == null) {
-                return new Object[]{req, BLOCK_LATEST};
-            } else {
-                return new Object[]{req, blockNumber};
-            }
-        } else {
-            return new Object[]{req};
-        }
-    }
+		if (privateFor != null && !privateFor.isEmpty())
+		{
+			req.put("privateFor", privateFor);
+		}
 
-    public String getFromAddress() {
-        return fromAddress;
-    }
+		if (isRead)
+		{
+			if (blockNumber == null)
+			{
+				return new Object[] { req, BLOCK_LATEST };
+			}
+			else
+			{
+				return new Object[] { req, blockNumber };
+			}
+		}
+		else
+		{
+			return new Object[] { req };
+		}
+	}
 
-    public void setFromAddress(String fromAddress) {
-        this.fromAddress = fromAddress;
-    }
+	public String getFromAddress()
+	{
+		return fromAddress;
+	}
 
-    public String getContractAddress() {
-        return contractAddress;
-    }
+	public void setFromAddress(String fromAddress)
+	{
+		this.fromAddress = fromAddress;
+	}
 
-    public void setContractAddress(String contractAddress) {
-        this.contractAddress = contractAddress;
-    }
+	public String getContractAddress()
+	{
+		return contractAddress;
+	}
 
-    public ContractABI getAbi() {
-        return abi;
-    }
+	public void setContractAddress(String contractAddress)
+	{
+		this.contractAddress = contractAddress;
+	}
 
-    public void setAbi(ContractABI abi) {
-        this.abi = abi;
-    }
+	public ContractABI getAbi()
+	{
+		return abi;
+	}
 
-    public Function getFunction() {
-        return function;
-    }
+	public void setAbi(ContractABI abi)
+	{
+		this.abi = abi;
+	}
 
-    public void setFunction(Function function) {
-        this.function = function;
-    }
+	public Function getFunction()
+	{
+		return function;
+	}
 
-    public Object getBlockNumber() {
-        return blockNumber;
-    }
+	public void setFunction(Function function)
+	{
+		this.function = function;
+	}
 
-    public void setBlockNumber(Object blockNumber) {
-        this.blockNumber = blockNumber;
-    }
+	public Object getBlockNumber()
+	{
+		return blockNumber;
+	}
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
-    }
+	public void setBlockNumber(Object blockNumber)
+	{
+		this.blockNumber = blockNumber;
+	}
 
-    public String getPrivateFrom() {
-        return privateFrom;
-    }
+	@Override
+	public String toString()
+	{
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
 
-    public void setPrivateFrom(String privateFrom) {
-        this.privateFrom = privateFrom;
-    }
+	public String getPrivateFrom()
+	{
+		return privateFrom;
+	}
 
-    public List<String> getPrivateFor() {
-        return privateFor;
-    }
+	public void setPrivateFrom(String privateFrom)
+	{
+		this.privateFrom = privateFrom;
+	}
 
-    public void setPrivateFor(List<String> privateFor) {
-        this.privateFor = privateFor;
-    }
+	public List<String> getPrivateFor()
+	{
+		return privateFor;
+	}
+
+	public void setPrivateFor(List<String> privateFor)
+	{
+		this.privateFor = privateFor;
+	}
 
 }

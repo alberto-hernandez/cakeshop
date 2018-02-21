@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jpmorgan.cakeshop.error.APIException;
+import com.jpmorgan.cakeshop.helper.HexUtils;
 import com.jpmorgan.cakeshop.model.Block;
 import com.jpmorgan.cakeshop.model.RequestModel;
 import com.jpmorgan.cakeshop.service.BlockService;
@@ -38,7 +39,7 @@ public class BlockServiceImpl implements BlockService
 			if (number != null && number >= 0)
 			{
 				method = "eth_getBlockByNumber";
-				input = String.format("0x", Long.toHexString(number));
+				input = HexUtils.toHexString(number);
 			}
 			else
 				if (tag != null && !tag.isEmpty())
@@ -98,7 +99,7 @@ public class BlockServiceImpl implements BlockService
 		List<RequestModel> reqs = new ArrayList<>();
 		for (long i = start; i <= end; i++)
 		{
-			reqs.add(new RequestModel("eth_getBlockByNumber", new Object[] { String.format("0x", Long.toHexString(i)), false }, 42L));
+			reqs.add(new RequestModel("eth_getBlockByNumber", new Object[] { HexUtils.toHexString(i), false }, 42L));
 		}
 		return batchGet(reqs);
 	}
@@ -109,7 +110,7 @@ public class BlockServiceImpl implements BlockService
 		List<RequestModel> reqs = new ArrayList<>();
 		for (Long num : numbers)
 		{
-			reqs.add(new RequestModel("eth_getBlockByNumber", new Object[] { String.format("0x", Long.toHexString(num)), false }, 42L));
+			reqs.add(new RequestModel("eth_getBlockByNumber", new Object[] { HexUtils.toHexString(num), false }, 42L));
 		}
 		return batchGet(reqs);
 	}
