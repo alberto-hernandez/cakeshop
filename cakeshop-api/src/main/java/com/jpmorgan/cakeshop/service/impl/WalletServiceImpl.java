@@ -174,6 +174,7 @@ public class WalletServiceImpl implements WalletService, GethRpcConstants
 		{
 			if (!e.getMessage().contains("account is locked"))
 			{
+				LOG.error(String.format("Error Unlocking address=%s, dummy=%s", address, DUMMY_PAYLOAD_HASH));
 				throw e;
 			}
 		}

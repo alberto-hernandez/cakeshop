@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.jpmorgan.cakeshop.error.APIException;
+import com.jpmorgan.cakeshop.helper.HexUtils;
 import com.jpmorgan.cakeshop.model.ContractABI.Function;
 
 public class TransactionRequest
@@ -69,7 +70,7 @@ public class TransactionRequest
 		req.put("from", fromAddress);
 		req.put("to", contractAddress);
 		req.put("gas", DEFAULT_GAS);
-		req.put("data", function.encodeAsHex(args));
+		req.put("data", HexUtils.toHexString(function.encodeAsHex(args)));
 
 		if (StringUtils.isNotBlank(privateFrom))
 		{
