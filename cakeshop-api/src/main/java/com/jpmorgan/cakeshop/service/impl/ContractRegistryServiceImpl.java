@@ -98,7 +98,7 @@ public class ContractRegistryServiceImpl implements ContractRegistryService {
         // TODO this is a temp solution to the problem of sharing the ContractRegistry
         // address among multiple Cakeshop nodes running on the same machine.
 
-        File fSharedConfig = CakeshopUtils.getSharedNetworkConfigFile();
+        File fSharedConfig = CakeshopUtils.findSharedNetworkConfigFile();
         if (fSharedConfig == null) {
             return;
         }
