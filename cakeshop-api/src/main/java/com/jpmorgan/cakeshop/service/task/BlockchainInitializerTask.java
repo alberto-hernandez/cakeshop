@@ -232,7 +232,8 @@ public class BlockchainInitializerTask implements Runnable
 			return addr;
 		}
 
+		LOG.error("Shared Config, file is empty so no contract registry address loaded");
+
 		return null;
 	}
-
 }

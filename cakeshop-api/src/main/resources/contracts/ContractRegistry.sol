@@ -46,7 +46,7 @@ contract ContractRegistry
   }
   */
 
-  function listAddrs() returns (address[] _addresses) {
+  function listAddrs() returns (address[]) {
     return addrs;
   }
 /*

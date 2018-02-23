@@ -17,6 +17,7 @@ import org.apache.commons.collections4.Predicate;
 import org.bouncycastle.util.encoders.Hex;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -258,8 +259,10 @@ public class ContractABI extends ArrayList<ContractABI.Entry>
 		public final List<Param> outputs;
 		public final Type type;
 		public final Boolean payable;
+		public final String stateMutability;
 
-		public Entry(Boolean anonymous, Boolean constant, String name, List<Param> inputs, List<Param> outputs, Type type, Boolean payable)
+		public Entry(Boolean anonymous, Boolean constant, String name, List<Param> inputs, List<Param> outputs, Type type, Boolean payable,
+				String stateMutability)
 		{
 			this.anonymous = anonymous;
 			this.constant = constant;
@@ -268,6 +271,7 @@ public class ContractABI extends ArrayList<ContractABI.Entry>
 			this.outputs = outputs;
 			this.type = type;
 			this.payable = payable == null ? Boolean.FALSE : payable;
+			this.stateMutability = stateMutability;
 		}
 
 		/**
@@ -307,24 +311,27 @@ public class ContractABI extends ArrayList<ContractABI.Entry>
 		}
 
 		@JsonCreator
+		@JsonIgnoreProperties(ignoreUnknown = true)
 		public static Entry create(@JsonProperty("anonymous") boolean anonymous,
 				@JsonProperty("constant") boolean constant,
 				@JsonProperty("name") String name,
 				@JsonProperty("inputs") List<Param> inputs,
 				@JsonProperty("outputs") List<Param> outputs,
-				@JsonProperty("type") Type type)
+				@JsonProperty("type") Type type,
+				@JsonProperty("stateMutability") String stateMutability)
+		// TODO: Incorporate State mutability
 		{
 			Entry result = null;
 			switch (type)
 			{
 			case constructor:
-				result = new Constructor(inputs, outputs);
+				result = new Constructor(inputs, outputs, stateMutability);
 				break;
 			case function:
-				result = new Function(constant, name, inputs, outputs);
+				result = new Function(constant, name, inputs, outputs, stateMutability);
 				break;
 			case event:
-				result = new Event(anonymous, name, inputs, outputs);
+				result = new Event(anonymous, name, inputs, outputs, stateMutability);
 				break;
 			}
 
@@ -365,9 +372,9 @@ public class ContractABI extends ArrayList<ContractABI.Entry>
 	public static class Constructor extends Entry
 	{
 
-		public Constructor(List<Param> inputs, List<Param> outputs)
+		public Constructor(List<Param> inputs, List<Param> outputs, String stateMutability)
 		{
-			super(null, null, "", inputs, outputs, Type.constructor, false);
+			super(null, null, "", inputs, outputs, Type.constructor, false, stateMutability);
 		}
 
 		public List<?> decode(byte[] encoded)
@@ -391,9 +398,9 @@ public class ContractABI extends ArrayList<ContractABI.Entry>
 
 		private static final int ENCODED_SIGN_LENGTH = 4;
 
-		public Function(boolean constant, String name, List<Param> inputs, List<Param> outputs)
+		public Function(boolean constant, String name, List<Param> inputs, List<Param> outputs, String stateMutability)
 		{
-			super(null, constant, name, inputs, outputs, Type.function, false);
+			super(null, constant, name, inputs, outputs, Type.function, false, stateMutability);
 		}
 
 		public String encodeAsHex(Object... args)
@@ -462,9 +469,9 @@ public class ContractABI extends ArrayList<ContractABI.Entry>
 	public static class Event extends Entry
 	{
 
-		public Event(boolean anonymous, String name, List<Param> inputs, List<Param> outputs)
+		public Event(boolean anonymous, String name, List<Param> inputs, List<Param> outputs, String stateMutability)
 		{
-			super(anonymous, null, name, inputs, outputs, Type.event, false);
+			super(anonymous, null, name, inputs, outputs, Type.event, false, stateMutability);
 		}
 
 		public List<?> decode(byte[] data, byte[][] topics)

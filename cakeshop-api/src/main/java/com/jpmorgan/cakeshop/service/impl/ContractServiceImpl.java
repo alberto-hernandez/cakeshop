@@ -329,6 +329,11 @@ public class ContractServiceImpl implements ContractService
 			req.setBlockNumber(blockNumber);
 		}
 
+		if ("listAddrs".equals(method))
+		{
+			LOG.debug("Transaction " + req.toGethArgs());
+		}
+
 		return read(req);
 	}
 
