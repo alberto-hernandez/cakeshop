@@ -42,7 +42,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 				.addEndpoint("ws")
 				.setAllowedOrigins("*")
 				.withSockJS()
-				.setClientLibraryUrl("/cakeshop/js/vendor/sockjs-1.1.4.min.js");
+				.setClientLibraryUrl("../js/vendor/sockjs-1.1.4.min.js");
 	}
 
 }
