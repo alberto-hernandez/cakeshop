@@ -41,7 +41,7 @@ public class BlockDAO extends BaseDAO
 			criteria.add(Restrictions.eq("number", number));
 			List results = criteria.list();
 
-			if (CollectionUtils.isNotEmpty(results))
+			if (CollectionUtils.isEmpty(results))
 			{
 				return null;
 			}
