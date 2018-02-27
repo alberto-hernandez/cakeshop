@@ -8,9 +8,7 @@ import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -162,13 +160,6 @@ public class EmbeddedDbDataSourceConfig implements ApplicationContextAware
 		{
 			this.embeddedDb.shutdown();
 		}
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException
-	{
-		this.applicationContext = applicationContext;
-
 	}
 
 }
