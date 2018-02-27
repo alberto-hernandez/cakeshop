@@ -88,7 +88,8 @@ public class BlockServiceImpl implements BlockService
 		block.setTotalDifficulty(toBigInt("totalDifficulty", blockData));
 		block.setGasLimit(toBigInt("gasLimit", blockData));
 		block.setGasUsed(toBigInt("gasUsed", blockData));
-		block.setTimestamp(toBigInt("timestamp", blockData));
+
+		block.setTimestamp(toTimestamp("timestamp", blockData));
 
 		return block;
 	}
