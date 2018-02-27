@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -329,10 +330,7 @@ public class ContractServiceImpl implements ContractService
 			req.setBlockNumber(blockNumber);
 		}
 
-		if ("listAddrs".equals(method))
-		{
-			LOG.debug("Transaction " + req.toGethArgs());
-		}
+		LOG.debug("Transaction " + req.toGethArgs());
 
 		return read(req);
 	}
@@ -341,6 +339,8 @@ public class ContractServiceImpl implements ContractService
 	public Object[] read(TransactionRequest request) throws APIException
 	{
 		request.setFromAddress(getAddress(request.getFromAddress())); // make sure we have a non-null from address
+
+		LOG.debug("Executing eth_call with " + Collections.singletonList(request.toGethArgs()));
 
 		Map<String, Object> readRes = geth.executeGethCall("eth_call", request.toGethArgs());
 		String res = (String) readRes.get("_result");
